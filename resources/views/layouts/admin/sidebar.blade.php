@@ -4,7 +4,7 @@
             <a class="nav-link active" href="{{url('categories')}}">Catagories</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#">product</a>
+            <a class="nav-link" href="{{url('products')}}">product</a>
         </li>
         <!-- <li class="nav-item">
             <a class="nav-link" href="#">Link</a>

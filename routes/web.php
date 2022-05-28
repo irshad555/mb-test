@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\ProductController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,8 +18,8 @@ use App\Http\Controllers\CategoryController;
 Route::get('/', function () {
     return view('welcome');
 });
-
 Route::get('/dashboard', [App\Http\Controllers\DashboardController::class,'index'])->name('dashboard');
 Route::get('/home', [App\Http\Controllers\HomeController::class,'index'])->name('home');
-
 Route::resource('/categories', CategoryController::class);
+Route::resource('/products', ProductController::class);
+Route::get('uploads/{filename}', [ProductController::class, 'displayImage'])->name('displayimage');

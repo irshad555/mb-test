@@ -2,25 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CategoryType;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use App\Repositories\Contracts\CategoryRepositoryInterface;
+use App\Repositories\Contracts\ProductRepositoryInterface;
+use Response;
+use Illuminate\Support\Facades\Storage;
+use File;
 
-class CategoryController extends Controller
+class ProductController extends Controller
 {
-    /**
-     * __construct
-     *
-     * @param  mixed $categoryRepository
-     * @return void
-     */
-    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    public function __construct(ProductRepositoryInterface $productRepository)
     {
-        $this->categoryRepository = $categoryRepository;
+        $this->productRepository = $productRepository;
     }
-
-
     /**
      * Display a listing of the resource.
      *
@@ -28,9 +23,9 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categoryTypes = CategoryType::all();
-        $categories = $this->categoryRepository->all();
-        return view('catagory', compact('categoryTypes', 'categories'));
+        $categories = Category::all();
+        $products = $this->productRepository->all();
+        return view('product', compact('categories', 'products'));
     }
 
     /**
@@ -43,57 +38,75 @@ class CategoryController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'Title' => ['required', 'string', 'max:255'],
-            'categoryType' => ['required','integer'],
+            'category' => ['required','integer'],
         ]);
 
         if (!$validator->passes()) {
             return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
-            return $this->categoryRepository->save($request);
+            return $this->productRepository->save($request);
         }
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\cr  $cr
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
-        return $this->categoryRepository->get($id);
+        return $this->productRepository->get($id);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\cr  $cr
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'Id' =>['required'],
             'Title' => ['required', 'string', 'max:255'],
-            'categoryType' => ['required','integer'],
+            'category' => ['required','integer'],
         ]);
 
         if (!$validator->passes()) {
             return response()->json(['status' => 0, 'error' => $validator->errors()->toArray()]);
         } else {
-            return $this->categoryRepository->update($request);
+            return $this->productRepository->save($request);
         }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\cr  $cr
+     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-        return $this->categoryRepository->delete($id);
+        return $this->productRepository->delete($id);
+    }
+
+    /**
+     * displayImage
+     *
+     * @param  mixed $filename
+     * @return void
+     */
+    public function displayImage($filename)
+    {
+        $path = Storage::disk('public')->path("uploads/$filename");
+        if (!File::exists($path)) {
+            abort(404);
+        }
+        $file = File::get($path);
+        $type = File::mimeType($path);
+        $response = Response::make($file, 200);
+        $response->header("Content-Type", $type);
+        return $response;
     }
 }
