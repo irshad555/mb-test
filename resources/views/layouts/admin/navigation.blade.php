@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg nnavbar-dark bg-dark">
   <div class="container-fluid">
-    <a class="navbar-brand" href="{{url('/dashboard')}}">
+    <a class="navbar-brand" href="{{url('admin/dashboard')}}">
       Dashboard
 
     </a>

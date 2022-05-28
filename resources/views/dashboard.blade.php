@@ -16,9 +16,7 @@
                     @include('layouts.admin.sidebar')
                 </div>
 
-                <div class="col-md-10" style="background-color: red;height:100px;">
 
-                </div>
             </div>
         </section>
 

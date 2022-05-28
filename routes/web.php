@@ -18,8 +18,16 @@ use App\Http\Controllers\ProductController;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/dashboard', [App\Http\Controllers\DashboardController::class,'index'])->name('dashboard');
+Auth::routes();
+Auth::routes([
+    'register' => false,
+    'reset' => false,
+    'verify' => false,
+]);
+Route::group((['middleware' => 'auth',]), function () {
+    Route::get('/admin/dashboard', [App\Http\Controllers\DashboardController::class,'index'])->name('dashboard');
+    Route::resource('/categories', CategoryController::class);
+    Route::resource('/products', ProductController::class);
+    Route::get('uploads/{filename}', [ProductController::class, 'displayImage'])->name('displayimage');
+});
 Route::get('/home', [App\Http\Controllers\HomeController::class,'index'])->name('home');
-Route::resource('/categories', CategoryController::class);
-Route::resource('/products', ProductController::class);
-Route::get('uploads/{filename}', [ProductController::class, 'displayImage'])->name('displayimage');
